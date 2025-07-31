@@ -1,4 +1,5 @@
 import UserList from '../components/ApiTest';
+import UserModal from '../components/UserModal';
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
           User Dashboard
         </h1>
         <UserList />
+        <UserModal />
       </div>
     </div>
   );

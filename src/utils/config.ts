@@ -22,7 +22,6 @@ export const config = {
 
   // Feature flags
   features: {
-    enableMockData: process.env.NEXT_PUBLIC_ENABLE_MOCK_DATA === 'true',
     enableDebugLogging: process.env.NEXT_PUBLIC_ENABLE_DEBUG_LOGGING === 'true',
   },
 
