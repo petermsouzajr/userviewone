@@ -23,9 +23,10 @@ import './commands';
 import '@cypress/grep/src/support';
 
 // Add custom commands here
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 declare global {
   namespace Cypress {
-    interface Chainable {}
+    interface Chainable {
+      // Custom commands will be added here as needed
+    }
   }
 }
