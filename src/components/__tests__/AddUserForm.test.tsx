@@ -198,9 +198,75 @@ describe('AddUserForm', () => {
     renderWithProviders(<AddUserForm isOpen={true} onClose={mockOnClose} />);
 
     const bsInput = screen.getByLabelText('Business Strategy');
-    expect(bsInput).toBeInTheDocument();
+    fireEvent.change(bsInput, { target: { value: 'Test Strategy' } });
 
-    fireEvent.change(bsInput, { target: { value: 'Test bs' } });
-    expect(bsInput).toHaveValue('Test bs');
+    expect(bsInput).toHaveValue('Test Strategy');
+  });
+
+  it('renders in page mode without modal wrapper', () => {
+    const mockOnSuccess = jest.fn();
+    renderWithProviders(
+      <AddUserForm
+        isOpen={true}
+        onClose={mockOnClose}
+        onSuccess={mockOnSuccess}
+        mode="page"
+      />
+    );
+
+    // Should render form content without modal
+    expect(screen.getByText('Basic Information')).toBeInTheDocument();
+    expect(screen.getByText('Address')).toBeInTheDocument();
+    expect(screen.getByText('Company')).toBeInTheDocument();
+
+    // Should not render modal title since we're in page mode
+    expect(screen.queryByText('Add New User')).not.toBeInTheDocument();
+  });
+
+  it('calls onSuccess callback when form is submitted successfully in page mode', async () => {
+    const mockOnSuccess = jest.fn();
+    renderWithProviders(
+      <AddUserForm
+        isOpen={true}
+        onClose={mockOnClose}
+        onSuccess={mockOnSuccess}
+        mode="page"
+      />
+    );
+
+    // Fill in required fields
+    fireEvent.change(screen.getByLabelText('Name *'), {
+      target: { value: 'John Doe' },
+    });
+    fireEvent.change(screen.getByLabelText('Username *'), {
+      target: { value: 'johndoe' },
+    });
+    fireEvent.change(screen.getByLabelText('Email *'), {
+      target: { value: 'john@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText('Phone *'), {
+      target: { value: '1234567890' },
+    });
+    fireEvent.change(screen.getByLabelText('Street *'), {
+      target: { value: '123 Main St' },
+    });
+    fireEvent.change(screen.getByLabelText('City *'), {
+      target: { value: 'New York' },
+    });
+    fireEvent.change(screen.getByLabelText('Zipcode *'), {
+      target: { value: '12345' },
+    });
+    fireEvent.change(screen.getByLabelText('Company Name *'), {
+      target: { value: 'Test Company' },
+    });
+
+    // Submit form
+    const submitButton = screen.getByText('Add User');
+    fireEvent.click(submitButton);
+
+    // Wait for async operations
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mockOnSuccess).toHaveBeenCalled();
   });
 });

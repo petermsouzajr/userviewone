@@ -64,7 +64,7 @@ describe('UserContext', () => {
     );
 
     expect(screen.getByTestId('users-count')).toHaveTextContent('0');
-    expect(screen.getByTestId('loading')).toHaveTextContent('false');
+    expect(screen.getByTestId('loading')).toHaveTextContent('true'); // Changed from 'false' to 'true' since UserContext now fetches data on mount
     expect(screen.getByTestId('error')).toHaveTextContent('no-error');
     expect(screen.getByTestId('search-term')).toHaveTextContent('');
     expect(screen.getByTestId('selected-user')).toHaveTextContent('none');

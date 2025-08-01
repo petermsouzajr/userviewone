@@ -3,7 +3,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useUserContext, userActions } from '../context/UserContext';
 import { User } from '../types/user';
-import { fetchUsers, fetchUsersXHR } from '../utils/api';
 import { useDebounce } from '../hooks/useDebounce';
 import TableSkeleton from './TableSkeleton';
 
@@ -12,48 +11,6 @@ const UserTableComponent = React.memo(function UserTableComponent() {
   const { users, loading, error, searchTerm, sortConfig } = state;
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const debouncedSearchTerm = useDebounce(localSearchTerm, 300);
-
-  // Fetch users on component mount
-  useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        dispatch(userActions.setLoading(true));
-        dispatch(userActions.setError(null));
-
-        // Try fetch first
-        try {
-          const fetchedUsers = await fetchUsers();
-          dispatch(userActions.setUsers(fetchedUsers));
-          return;
-        } catch (fetchError) {
-          if (process.env.NODE_ENV !== 'test') {
-            console.log('Fetch failed, trying XHR...', fetchError);
-          }
-        }
-
-        // Try XHR as fallback
-        try {
-          const fetchedUsers = await fetchUsersXHR();
-          dispatch(userActions.setUsers(fetchedUsers));
-          return;
-        } catch (xhrError) {
-          console.log('XHR also failed:', xhrError);
-        }
-
-        // If both methods fail, show error
-        throw new Error('Unable to fetch users from API');
-      } catch (err) {
-        console.error('All methods failed:', err);
-        dispatch(
-          userActions.setError(
-            err instanceof Error ? err.message : 'Failed to fetch users'
-          )
-        );
-      }
-    };
-
-    loadUsers();
-  }, [dispatch]);
 
   // Handle search - memoized callback
   const handleSearch = useCallback((value: string) => {

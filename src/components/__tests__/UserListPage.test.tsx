@@ -3,30 +3,52 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import UserListPage from '../UserListPage';
 import { UserProvider } from '../../context/UserContext';
 
+// Mock Next.js router
+const mockPush = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
+
 const renderWithProviders = (component: React.ReactElement) => {
   return render(<UserProvider>{component}</UserProvider>);
 };
 
 describe('UserListPage', () => {
+  beforeEach(() => {
+    mockPush.mockClear();
+  });
+
   it('renders the page title', () => {
     renderWithProviders(<UserListPage />);
     expect(screen.getByText('User Dashboard')).toBeInTheDocument();
   });
 
-  it('renders the Add User button', () => {
+  it('renders both Add User buttons', () => {
     renderWithProviders(<UserListPage />);
-    expect(screen.getByText('Add User')).toBeInTheDocument();
+    expect(screen.getByText('Quick Add (Modal)')).toBeInTheDocument();
+    expect(screen.getByText('Add User (Page)')).toBeInTheDocument();
   });
 
-  it('opens add user modal when Add User button is clicked', () => {
+  it('opens add user modal when Quick Add button is clicked', () => {
     renderWithProviders(<UserListPage />);
 
-    const addUserButton = screen.getByText('Add User');
-    fireEvent.click(addUserButton);
+    const quickAddButton = screen.getByText('Quick Add (Modal)');
+    fireEvent.click(quickAddButton);
 
     // The modal should open (we can't easily test this without more complex setup)
     // For now, we'll test that the button is clickable
-    expect(addUserButton).toBeInTheDocument();
+    expect(quickAddButton).toBeInTheDocument();
+  });
+
+  it('navigates to add user page when Add User (Page) button is clicked', () => {
+    renderWithProviders(<UserListPage />);
+
+    const addUserPageButton = screen.getByText('Add User (Page)');
+    fireEvent.click(addUserPageButton);
+
+    expect(mockPush).toHaveBeenCalledWith('/add-user');
   });
 
   it('renders the UserTable component', () => {
@@ -42,7 +64,8 @@ describe('UserListPage', () => {
 
     // Check for main page elements
     expect(screen.getByText('User Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Add User')).toBeInTheDocument();
+    expect(screen.getByText('Quick Add (Modal)')).toBeInTheDocument();
+    expect(screen.getByText('Add User (Page)')).toBeInTheDocument();
 
     // Check for table structure
     expect(screen.getByRole('table')).toBeInTheDocument();
@@ -58,5 +81,13 @@ describe('UserListPage', () => {
     // Check for content container
     const contentContainer = container.querySelector('.container');
     expect(contentContainer).toBeInTheDocument();
+  });
+
+  it('has proper button styling and layout', () => {
+    renderWithProviders(<UserListPage />);
+
+    // Check that buttons are in a flex container
+    const buttonContainer = screen.getByText('Quick Add (Modal)').parentElement;
+    expect(buttonContainer).toHaveClass('flex gap-3');
   });
 });

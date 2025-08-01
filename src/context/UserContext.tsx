@@ -1,7 +1,14 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  ReactNode,
+  useEffect,
+} from 'react';
 import { User } from '../types/user';
+import { fetchUsers } from '../utils/api';
 
 // State interface
 interface UserState {
@@ -14,6 +21,7 @@ interface UserState {
     key: keyof User;
     direction: 'asc' | 'desc';
   } | null;
+  hasFetchedUsers: boolean;
 }
 
 // Action types
@@ -28,7 +36,8 @@ type UserAction =
       payload: { key: keyof User; direction: 'asc' | 'desc' } | null;
     }
   | { type: 'ADD_USER'; payload: User }
-  | { type: 'CLEAR_ERROR' };
+  | { type: 'CLEAR_ERROR' }
+  | { type: 'SET_HAS_FETCHED_USERS'; payload: boolean };
 
 // Initial state
 const initialState: UserState = {
@@ -38,6 +47,7 @@ const initialState: UserState = {
   selectedUser: null,
   searchTerm: '',
   sortConfig: null,
+  hasFetchedUsers: false,
 };
 
 // Reducer function
@@ -95,6 +105,12 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
         error: null,
       };
 
+    case 'SET_HAS_FETCHED_USERS':
+      return {
+        ...state,
+        hasFetchedUsers: action.payload,
+      };
+
     default:
       return state;
   }
@@ -116,6 +132,28 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(userReducer, initialState);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      try {
+        const users = await fetchUsers();
+        dispatch({ type: 'SET_USERS', payload: users });
+        dispatch({ type: 'SET_HAS_FETCHED_USERS', payload: true });
+      } catch (error) {
+        dispatch({
+          type: 'SET_ERROR',
+          payload: error instanceof Error ? error.message : String(error),
+        });
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+
+    if (!state.hasFetchedUsers) {
+      fetchData();
+    }
+  }, [state.hasFetchedUsers]);
 
   return (
     <UserContext.Provider value={{ state, dispatch }}>
@@ -157,4 +195,8 @@ export const userActions = {
   ) => ({ type: 'SET_SORT_CONFIG' as const, payload: sortConfig }),
   addUser: (user: User) => ({ type: 'ADD_USER' as const, payload: user }),
   clearError: () => ({ type: 'CLEAR_ERROR' as const }),
+  setHasFetchedUsers: (hasFetched: boolean) => ({
+    type: 'SET_HAS_FETCHED_USERS' as const,
+    payload: hasFetched,
+  }),
 };

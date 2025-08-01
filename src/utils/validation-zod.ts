@@ -125,8 +125,20 @@ export const formatZodErrors = (result: {
     return [];
   }
 
-  return result.error.issues.map((err) => ({
-    field: err.path.join('.'),
-    message: err.message,
+  // Group errors by field to avoid duplicates
+  const errorMap = new Map<string, string[]>();
+
+  result.error.issues.forEach((err) => {
+    const field = err.path.join('.');
+    if (!errorMap.has(field)) {
+      errorMap.set(field, []);
+    }
+    errorMap.get(field)!.push(err.message);
+  });
+
+  // Convert to array format, taking only the first error per field
+  return Array.from(errorMap.entries()).map(([field, messages]) => ({
+    field,
+    message: messages[0], // Take the first error message for each field
   }));
 };

@@ -20,11 +20,14 @@ interface UseFormValidationOptions {
 }
 
 export const useFormValidation = (options: UseFormValidationOptions = {}) => {
-  const { validateOnChange = true, validateOnBlur = true } = options;
+  const { validateOnChange = false, validateOnBlur = false } = options;
 
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [touched, setTouched] = useState<Set<string>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modifiedAfterSubmission, setModifiedAfterSubmission] = useState<
+    Set<string>
+  >(new Set());
 
   // Validate a single field
   const validateSingleField = useCallback(
@@ -41,7 +44,6 @@ export const useFormValidation = (options: UseFormValidationOptions = {}) => {
     setErrors(formattedErrors);
 
     // Mark all fields as touched when form is submitted
-    // This ensures all validation errors are displayed
     const allFields = [
       'name',
       'username',
@@ -49,18 +51,29 @@ export const useFormValidation = (options: UseFormValidationOptions = {}) => {
       'phone',
       'website',
       'address.street',
+      'address.suite',
       'address.city',
       'address.zipcode',
       'company.name',
+      'company.catchPhrase',
+      'company.bs',
     ];
     setTouched(new Set(allFields));
+
+    // Reset modified fields tracking when form is submitted
+    setModifiedAfterSubmission(new Set());
 
     return result.success;
   }, []);
 
-  // Handle field change with validation
+  // Handle field change with validation (disabled by default)
   const handleFieldChange = useCallback(
     (field: string, value: string) => {
+      // Track if field has been modified after submission
+      if (isSubmitting === false && errors.some((err) => err.field === field)) {
+        setModifiedAfterSubmission((prev) => new Set([...prev, field]));
+      }
+
       if (validateOnChange) {
         const fieldError = validateSingleField(field, value);
 
@@ -76,10 +89,10 @@ export const useFormValidation = (options: UseFormValidationOptions = {}) => {
       // Mark field as touched
       setTouched((prev) => new Set([...prev, field]));
     },
-    [validateOnChange, validateSingleField]
+    [validateOnChange, validateSingleField, isSubmitting, errors]
   );
 
-  // Handle field blur with validation
+  // Handle field blur with validation (disabled by default)
   const handleFieldBlur = useCallback(
     (field: string, value: string) => {
       if (validateOnBlur) {
@@ -120,10 +133,16 @@ export const useFormValidation = (options: UseFormValidationOptions = {}) => {
   // Check if field has error and is touched
   const hasFieldError = useCallback(
     (field: string): boolean => {
-      // Show error if field is touched OR if form has been submitted (isSubmitting)
-      return (isFieldTouched(field) || isSubmitting) && !!getFieldError(field);
+      // Don't show errors for fields that have been modified after submission
+      if (modifiedAfterSubmission.has(field)) {
+        return false;
+      }
+
+      // Show validation errors when submitting the form OR when there are actual errors for the field
+      // This ensures error styling persists even after isSubmitting becomes false
+      return (isSubmitting || !!getFieldError(field)) && !!getFieldError(field);
     },
-    [isFieldTouched, getFieldError, isSubmitting]
+    [getFieldError, isSubmitting, modifiedAfterSubmission]
   );
 
   // Clear all errors

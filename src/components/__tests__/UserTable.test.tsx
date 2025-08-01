@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import UserTable from '../UserTable';
 import { UserProvider } from '../../context/UserContext';
+import { fetchUsers } from '../../utils/api';
 
 // Mock the API module
 jest.mock('../../utils/api', () => ({
@@ -40,8 +41,11 @@ describe('UserTable', () => {
     jest.clearAllMocks();
   });
 
-  it('renders table structure', () => {
+  it('renders table structure', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Check that the table structure is rendered
     expect(screen.getByText('Name')).toBeInTheDocument();
@@ -51,19 +55,25 @@ describe('UserTable', () => {
     expect(screen.getByText('City')).toBeInTheDocument();
   });
 
-  it('renders search input', () => {
+  it('renders search input', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(
       screen.getByPlaceholderText('Search by name, email, or company...')
     ).toBeInTheDocument();
   });
 
-  it('shows loading state initially', () => {
+  it('shows loading state initially', async () => {
     renderWithProviders(<UserTable />);
 
     // Initially shows loading skeleton
     expect(screen.getByRole('table')).toBeInTheDocument();
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
   });
 
   it('shows results count after loading', async () => {
@@ -75,8 +85,11 @@ describe('UserTable', () => {
     expect(screen.getByText(/Showing 1 of 1 users/)).toBeInTheDocument();
   });
 
-  it('handles search input changes', () => {
+  it('handles search input changes', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -86,8 +99,11 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue('test');
   });
 
-  it('handles column header clicks for sorting', () => {
+  it('handles column header clicks for sorting', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const nameHeader = screen.getByText('Name');
     fireEvent.click(nameHeader);
@@ -98,6 +114,9 @@ describe('UserTable', () => {
 
   it('handles search input with debouncing', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -110,8 +129,11 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue('John');
   });
 
-  it('handles multiple sort clicks', () => {
+  it('handles multiple sort clicks', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const nameHeader = screen.getByText('Name');
     const emailHeader = screen.getByText('Email');
@@ -123,8 +145,11 @@ describe('UserTable', () => {
     expect(emailHeader).toBeInTheDocument();
   });
 
-  it('handles sort direction changes', () => {
+  it('handles sort direction changes', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const nameHeader = screen.getByText('Name');
 
@@ -140,8 +165,11 @@ describe('UserTable', () => {
     expect(nameHeader).toBeInTheDocument();
   });
 
-  it('handles empty search results', () => {
+  it('handles empty search results', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -151,8 +179,11 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue('NonExistentUser');
   });
 
-  it('handles special characters in search', () => {
+  it('handles special characters in search', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -162,8 +193,11 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue('test@example.com');
   });
 
-  it('handles very long search terms', () => {
+  it('handles very long search terms', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -174,8 +208,11 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue(longSearchTerm);
   });
 
-  it('handles search with numbers', () => {
+  it('handles search with numbers', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -185,19 +222,25 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue('123');
   });
 
-  it('handles search with mixed content', () => {
+  it('handles search with mixed content', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
     );
-    fireEvent.change(searchInput, { target: { value: 'John123@example.com' } });
+    fireEvent.change(searchInput, { target: { value: 'test123@example.com' } });
 
-    expect(searchInput).toHaveValue('John123@example.com');
+    expect(searchInput).toHaveValue('test123@example.com');
   });
 
-  it('handles search input clearing', () => {
+  it('handles search input clearing', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
@@ -208,51 +251,71 @@ describe('UserTable', () => {
     expect(searchInput).toHaveValue('');
   });
 
-  it('handles table row interactions', () => {
+  it('handles table row interactions', async () => {
     renderWithProviders(<UserTable />);
 
     // Wait for data to load
-    setTimeout(() => {
-      const tableRows = screen.getAllByRole('row');
-      expect(tableRows.length).toBeGreaterThan(1); // Header + data rows
-    }, 100);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Check that table rows are rendered
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
   });
 
-  it('handles loading state', () => {
+  it('handles loading state', async () => {
     renderWithProviders(<UserTable />);
 
-    // Initially should show loading state
+    // Initially shows loading skeleton
     expect(screen.getByRole('table')).toBeInTheDocument();
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
   });
 
-  it('handles error state gracefully', () => {
+  it('handles error state gracefully', async () => {
+    // Mock API to throw error by temporarily overriding the mock
+    const originalMock = jest.mocked(fetchUsers);
+    originalMock.mockRejectedValueOnce(new Error('API Error'));
+
     renderWithProviders(<UserTable />);
 
-    // Should handle API errors gracefully
-    expect(screen.getByRole('table')).toBeInTheDocument();
+    // Wait for error to be handled
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(screen.getByText(/Error:/)).toBeInTheDocument();
   });
 
-  it('handles API error scenarios', () => {
+  it('handles API error scenarios', async () => {
+    // Mock API to throw error by temporarily overriding the mock
+    const originalMock = jest.mocked(fetchUsers);
+    originalMock.mockRejectedValueOnce(new Error('Network Error'));
+
     renderWithProviders(<UserTable />);
 
-    // Should handle network errors gracefully
-    expect(screen.getByRole('table')).toBeInTheDocument();
+    // Wait for error to be handled
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(screen.getByText(/Error:/)).toBeInTheDocument();
   });
 
-  it('handles data filtering logic', () => {
+  it('handles data filtering logic', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const searchInput = screen.getByPlaceholderText(
       'Search by name, email, or company...'
     );
     fireEvent.change(searchInput, { target: { value: 'test' } });
 
-    // Should trigger filtering logic
     expect(searchInput).toHaveValue('test');
   });
 
-  it('handles data sorting logic', () => {
+  it('handles data sorting logic', async () => {
     renderWithProviders(<UserTable />);
+
+    // Wait for data to load
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const nameHeader = screen.getByText('Name');
     fireEvent.click(nameHeader);
