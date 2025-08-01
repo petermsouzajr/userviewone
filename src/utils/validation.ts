@@ -198,6 +198,24 @@ export const validateField = (field: string, value: string): string | null => {
       return validateWebsite(value)
         ? null
         : 'Please enter a valid website URL (optional)';
+    case 'address.street':
+    case 'street':
+      return validateRequired(value) ? null : 'Street address is required';
+    case 'address.city':
+    case 'city':
+      return validateRequired(value) ? null : 'City is required';
+    case 'address.zipcode':
+    case 'zipcode':
+      if (!validateRequired(value)) {
+        return 'Zipcode is required';
+      }
+      const zipcodeRegex = /^\d{5}(-\d{4})?$/;
+      return zipcodeRegex.test(value.trim())
+        ? null
+        : 'Please enter a valid zipcode';
+    case 'company.name':
+    case 'companyName':
+      return validateRequired(value) ? null : 'Company name is required';
     default:
       return null;
   }

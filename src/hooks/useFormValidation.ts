@@ -2,11 +2,16 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import {
-  ValidationError,
   validateField,
   validateUserForm,
-} from '../utils/validation';
+  formatZodErrors,
+} from '../utils/validation-zod';
 import { UserFormData } from '../types/user';
+
+interface ValidationError {
+  field: string;
+  message: string;
+}
 
 interface UseFormValidationOptions {
   validateOnChange?: boolean;
@@ -32,8 +37,25 @@ export const useFormValidation = (options: UseFormValidationOptions = {}) => {
   // Validate all fields
   const validateForm = useCallback((data: UserFormData): boolean => {
     const result = validateUserForm(data);
-    setErrors(result.errors);
-    return result.isValid;
+    const formattedErrors = formatZodErrors(result);
+    setErrors(formattedErrors);
+
+    // Mark all fields as touched when form is submitted
+    // This ensures all validation errors are displayed
+    const allFields = [
+      'name',
+      'username',
+      'email',
+      'phone',
+      'website',
+      'address.street',
+      'address.city',
+      'address.zipcode',
+      'company.name',
+    ];
+    setTouched(new Set(allFields));
+
+    return result.success;
   }, []);
 
   // Handle field change with validation
@@ -98,9 +120,10 @@ export const useFormValidation = (options: UseFormValidationOptions = {}) => {
   // Check if field has error and is touched
   const hasFieldError = useCallback(
     (field: string): boolean => {
-      return isFieldTouched(field) && !!getFieldError(field);
+      // Show error if field is touched OR if form has been submitted (isSubmitting)
+      return (isFieldTouched(field) || isSubmitting) && !!getFieldError(field);
     },
-    [isFieldTouched, getFieldError]
+    [isFieldTouched, getFieldError, isSubmitting]
   );
 
   // Clear all errors

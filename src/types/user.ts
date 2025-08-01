@@ -1,42 +1,7 @@
-export interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  website: string;
-  address: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-    geo: {
-      lat: string;
-      lng: string;
-    };
-  };
-  company: {
-    name: string;
-    catchPhrase: string;
-    bs: string;
-  };
-}
-
-export interface UserFormData {
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  website: string;
-  address: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-  };
-  company: {
-    name: string;
-    catchPhrase: string;
-    bs: string;
-  };
-}
+// Re-export types from Zod validation
+export type {
+  User,
+  UserFormData,
+  Address,
+  Company,
+} from '../utils/validation-zod';

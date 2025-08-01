@@ -103,7 +103,7 @@ describe('AddUserForm', () => {
       target: { value: 'john@example.com' },
     });
     fireEvent.change(screen.getByLabelText('Phone *'), {
-      target: { value: '123-456-7890' },
+      target: { value: '1234567890' },
     });
     fireEvent.change(screen.getByLabelText('Street *'), {
       target: { value: '123 Main St' },

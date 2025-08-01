@@ -76,6 +76,7 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
     validateForm,
     clearErrors,
     setSubmitting,
+    errors,
   } = useFormValidation({
     validateOnChange: true,
     validateOnBlur: true,
@@ -94,8 +95,7 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
           newData.company = { ...newData.company, [child]: value };
         }
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (newData as any)[field] = value;
+        (newData as Record<string, unknown>)[field] = value;
       }
 
       return newData;
@@ -246,11 +246,11 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
               }
               onBlur={(e) => handleInputBlur('address.street', e.target.value)}
               error={
-                hasFieldError('street')
-                  ? getFieldError('street') || undefined
+                hasFieldError('address.street')
+                  ? getFieldError('address.street') || undefined
                   : undefined
               }
-              variant={hasFieldError('street') ? 'error' : 'default'}
+              variant={hasFieldError('address.street') ? 'error' : 'default'}
             />
             <Input
               label="Suite"
@@ -268,11 +268,11 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
               }
               onBlur={(e) => handleInputBlur('address.city', e.target.value)}
               error={
-                hasFieldError('city')
-                  ? getFieldError('city') || undefined
+                hasFieldError('address.city')
+                  ? getFieldError('address.city') || undefined
                   : undefined
               }
-              variant={hasFieldError('city') ? 'error' : 'default'}
+              variant={hasFieldError('address.city') ? 'error' : 'default'}
             />
             <Input
               label="Zipcode *"
@@ -282,11 +282,11 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
               }
               onBlur={(e) => handleInputBlur('address.zipcode', e.target.value)}
               error={
-                hasFieldError('zipcode')
-                  ? getFieldError('zipcode') || undefined
+                hasFieldError('address.zipcode')
+                  ? getFieldError('address.zipcode') || undefined
                   : undefined
               }
-              variant={hasFieldError('zipcode') ? 'error' : 'default'}
+              variant={hasFieldError('address.zipcode') ? 'error' : 'default'}
             />
           </div>
         </div>
@@ -352,10 +352,21 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
         {/* Form Status */}
         {formState.hasErrors && (
           <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-600">
-              Please fix the {formState.errorCount} error
-              {formState.errorCount !== 1 ? 's' : ''} above.
+            <p className="text-sm text-red-600 font-medium mb-2">
+              Please fix the following {formState.errorCount} error
+              {formState.errorCount !== 1 ? 's' : ''}:
             </p>
+            <ul className="text-sm text-red-600 space-y-1">
+              {errors.map((error) => (
+                <li key={error.field} className="flex items-start">
+                  <span className="text-red-500 mr-1">•</span>
+                  <span>
+                    <strong>{error.field.replace('.', ' ')}:</strong>{' '}
+                    {error.message}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </form>
