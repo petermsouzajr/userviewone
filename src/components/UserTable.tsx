@@ -26,7 +26,9 @@ const UserTableComponent = React.memo(function UserTableComponent() {
           dispatch(userActions.setUsers(fetchedUsers));
           return;
         } catch (fetchError) {
-          console.log('Fetch failed, trying XHR...', fetchError);
+          if (process.env.NODE_ENV !== 'test') {
+            console.log('Fetch failed, trying XHR...', fetchError);
+          }
         }
 
         // Try XHR as fallback

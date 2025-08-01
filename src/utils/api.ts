@@ -32,7 +32,9 @@ export const fetchUsers = async (): Promise<User[]> => {
     debugLog('📦 Parsed data:', data);
     return data;
   } catch (err) {
-    console.error('❌ Error fetching users:', err);
+    if (process.env.NODE_ENV !== 'test') {
+      console.error('❌ Error fetching users:', err);
+    }
     throw err;
   }
 };

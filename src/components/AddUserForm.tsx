@@ -30,6 +30,39 @@ const initialFormData: UserFormData = {
   },
 };
 
+// Generate random realistic coordinates
+const generateRandomCoordinates = () => {
+  // Major city coordinates for realistic demo data
+  const cities = [
+    { lat: 40.7128, lng: -74.006 }, // New York
+    { lat: 34.0522, lng: -118.2437 }, // Los Angeles
+    { lat: 41.8781, lng: -87.6298 }, // Chicago
+    { lat: 29.7604, lng: -95.3698 }, // Houston
+    { lat: 33.749, lng: -84.388 }, // Atlanta
+    { lat: 25.7617, lng: -80.1918 }, // Miami
+    { lat: 39.9526, lng: -75.1652 }, // Philadelphia
+    { lat: 32.7767, lng: -96.797 }, // Dallas
+    { lat: 37.7749, lng: -122.4194 }, // San Francisco
+    { lat: 47.6062, lng: -122.3321 }, // Seattle
+    { lat: 51.5074, lng: -0.1278 }, // London
+    { lat: 48.8566, lng: 2.3522 }, // Paris
+    { lat: 52.52, lng: 13.405 }, // Berlin
+    { lat: 35.6762, lng: 139.6503 }, // Tokyo
+    { lat: 31.2304, lng: 121.4737 }, // Shanghai
+  ];
+
+  const randomCity = cities[Math.floor(Math.random() * cities.length)];
+
+  // Add small random offset to make it more realistic
+  const latOffset = (Math.random() - 0.5) * 0.1; // ±0.05 degrees
+  const lngOffset = (Math.random() - 0.5) * 0.1; // ±0.05 degrees
+
+  return {
+    lat: (randomCity.lat + latOffset).toFixed(6),
+    lng: (randomCity.lng + lngOffset).toFixed(6),
+  };
+};
+
 export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
   const { dispatch } = useUserContext();
   const [formData, setFormData] = useState<UserFormData>(initialFormData);
@@ -91,10 +124,7 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
           id: Date.now(), // Simple ID generation for demo
           address: {
             ...formData.address,
-            geo: {
-              lat: '0',
-              lng: '0',
-            },
+            geo: generateRandomCoordinates(),
           },
         };
 

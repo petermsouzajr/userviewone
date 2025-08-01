@@ -22,7 +22,9 @@ export const config = {
 
   // Feature flags
   features: {
-    enableDebugLogging: process.env.NEXT_PUBLIC_ENABLE_DEBUG_LOGGING === 'true',
+    enableDebugLogging:
+      process.env.NEXT_PUBLIC_ENABLE_DEBUG_LOGGING === 'true' &&
+      process.env.NODE_ENV !== 'test',
   },
 
   // App configuration
