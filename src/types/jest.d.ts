@@ -23,6 +23,9 @@ declare global {
       toHaveAccessibleDescription(description: string | RegExp): R;
     }
   }
+
+  // Ensure Jest expect is available
+  const expect: jest.Expect;
 }
 
 export {};
