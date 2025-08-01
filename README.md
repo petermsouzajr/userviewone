@@ -1,255 +1,272 @@
-# User Dashboard
+# User Dashboard Application
 
-A modern React dashboard application built with Next.js, TypeScript, and Tailwind CSS. This project includes state management, API integration, component architecture, and professional development practices.
+A modern, responsive React dashboard application for managing user data with search, sort, and CRUD operations.
 
 ## 🚀 Features
 
-- **User Management**: Fetch and display users from JSONPlaceholder API
-- **Interactive UI**: Click user cards to view detailed information in a modal
-- **State Management**: Centralized state using React Context + useReducer
+### Core Functionality
+
+- **User Management**: Fetch, display, and add users
+- **Search & Filter**: Real-time search by name, email, and company
+- **Sortable Table**: Click column headers to sort data
+- **User Details Modal**: View comprehensive user information
+- **Add User Form**: Create new users with validation
+- **Client-side Routing**: Navigate between User List and Add User views
+
+### Technical Features
+
+- **Responsive Design**: Works on desktop and mobile devices
+- **Accessibility**: ARIA attributes and keyboard navigation
+- **Error Handling**: Comprehensive error states and loading indicators
+- **Form Validation**: Real-time validation with helpful error messages
+- **Performance Optimized**: Efficient rendering and state management
 - **Type Safety**: Full TypeScript implementation
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Professional Architecture**: Clean separation of concerns and scalable patterns
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
-- **Framework**: Next.js 15.4.5 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **State Management**: React Context API + useReducer
-- **API**: JSONPlaceholder REST API
-- **Development**: ESLint, TypeScript strict mode
+### Frontend
 
-## 📋 Prerequisites
+- **React 19** with functional components and hooks
+- **TypeScript** for type safety
+- **Next.js 15** for development and build tooling
+- **React Router DOM** for client-side routing
+- **Tailwind CSS** for styling
 
-- Node.js 18+
-- npm, yarn, pnpm, or bun
+### State Management
 
-## 🚀 Quick Start
+- **Context API** with useReducer for predictable state updates
+- **Custom hooks** for reusable logic
 
-### 1. Clone and Install
+### Testing
 
-```bash
-git clone <repository-url>
-cd userviewone
-npm install
-```
-
-### 2. Environment Setup
-
-Create your environment file:
-
-```bash
-# Copy the example environment file
-cp env.example .env.local
-
-# Edit the environment file with your configuration
-nano .env.local
-```
-
-**Required Environment Variables:**
-
-```env
-# API Configuration
-NEXT_PUBLIC_API_BASE_URL=https://jsonplaceholder.typicode.com
-NEXT_PUBLIC_API_TIMEOUT=10000
-NEXT_PUBLIC_USERS_ENDPOINT=/users
-
-# Optional Fallbacks (for development)
-NEXT_PUBLIC_API_BASE_URL_FALLBACK=https://jsonplaceholder.typicode.com
-NEXT_PUBLIC_API_TIMEOUT_FALLBACK=10000
-NEXT_PUBLIC_USERS_ENDPOINT_FALLBACK=/users
-
-# Feature Flags
-NEXT_PUBLIC_ENABLE_DEBUG_LOGGING=true
-NEXT_PUBLIC_ENABLE_MOCK_DATA=false
-
-# App Configuration
-NEXT_PUBLIC_APP_NAME=User Dashboard
-NEXT_PUBLIC_APP_VERSION=0.1.0
-```
-
-### 3. Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the application.
-
-## 🧪 Development Commands
-
-### Quality Assurance
-
-```bash
-# Run all quality checks (linting + type checking)
-npm run dev:check:all
-
-# Run ESLint only
-npm run lint
-
-# Run TypeScript type checking only
-npm run type-check
-```
-
-### Build and Production
-
-```bash
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-
-# Preview production build
-npm run build && npm run start
-```
+- **Jest** for test runner
+- **React Testing Library** for component testing
+- **User Event** for interaction testing
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx         # Root layout with UserProvider
-│   ├── page.tsx           # Main dashboard page
-│   ├── error.tsx          # Error boundary
-│   └── global-error.tsx   # Global error boundary
+├── app/                    # Next.js app router
+│   ├── layout.tsx         # Root layout with providers
+│   └── page.tsx           # Main page with routing
 ├── components/            # React components
-│   ├── ApiTest.tsx        # User list component (main display)
-│   └── UserModal.tsx      # User detail modal
+│   ├── ui/               # Reusable UI components
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Modal.tsx
+│   │   └── Table.tsx
+│   ├── UserTable.tsx     # Main user table with search/sort
+│   ├── UserModal.tsx     # User details modal
+│   ├── AddUserForm.tsx   # Add user form with validation
+│   ├── UserListPage.tsx  # User list page component
+│   ├── AddUserPage.tsx   # Add user page component
+│   └── __tests__/        # Unit tests
 ├── context/              # State management
-│   └── UserContext.tsx   # Global state with useReducer
-├── types/                # TypeScript definitions
-│   └── user.ts           # User interface types
+│   └── UserContext.tsx   # User state with Context API
+├── hooks/                # Custom hooks
+├── types/                # TypeScript type definitions
 ├── utils/                # Utility functions
-│   ├── api.ts            # API fetching utilities
-│   └── config.ts         # Environment configuration
-└── styles/               # Global styles
-    └── globals.css       # Tailwind CSS imports
+│   ├── api.ts           # API functions
+│   ├── config.ts        # Configuration
+│   └── validation.ts    # Form validation
+└── styles/              # Global styles
 ```
 
-## 🏗️ Architecture
+## 🚀 Getting Started
 
-### State Management
+### Prerequisites
 
-The application uses **React Context + useReducer** for centralized state management:
+- Node.js 18+
+- npm or yarn
 
-- **UserContext**: Global state for users, loading, errors, selected user
-- **useReducer**: Predictable state updates with type-safe actions
-- **Custom Hooks**: `useUserContext` for easy state access
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd userviewone
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript type checking
+- `npm run test` - Run unit tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
+- `npm run dev:check:all` - Run lint, type-check, and tests
+
+## 🏗 Architecture Decisions
+
+### State Management: Context API + useReducer
+
+**Why Context API?**
+
+- Lightweight for this application size
+- Built into React, no external dependencies
+- Perfect for shared state across components
+- Predictable state updates with useReducer
+
+**Benefits:**
+
+- Centralized state management
+- Easy to test and debug
+- Type-safe with TypeScript
+- Scalable for future features
 
 ### Component Architecture
 
-- **Separation of Concerns**: Each component has a single responsibility
-- **Type Safety**: Full TypeScript coverage for all components
-- **Reusable Patterns**: Consistent styling and interaction patterns
+**UI Components:**
+
+- Reusable, composable components
+- Consistent styling with Tailwind
+- Accessibility-first design
+- Type-safe props with TypeScript
+
+**Page Components:**
+
+- Route-specific components
+- Clean separation of concerns
+- Easy to test and maintain
 
 ### API Integration
 
-- **Environment-based Configuration**: API URLs and timeouts from environment variables
-- **Error Handling**: Graceful fallbacks and user-friendly error messages
-- **Loading States**: Professional loading indicators
+**Features:**
 
-## 🔧 Development Process
+- Fetch API with fallback to XMLHttpRequest
+- Configurable timeouts and error handling
+- Environment-based configuration
+- Debug logging for development
 
-### 1. Environment Setup
+### Form Validation
 
-The project uses a robust environment variable system:
+**Approach:**
 
-```bash
-# Required for API functionality
+- Real-time validation on blur
+- Comprehensive error messages
+- Type-safe validation rules
+- Accessible error display
+
+## 🧪 Testing Strategy
+
+### Unit Tests
+
+- **Component Testing**: Test individual component behavior
+- **User Interactions**: Test form submissions, clicks, navigation
+- **State Management**: Test context and reducer logic
+- **Error Handling**: Test error states and edge cases
+
+### Test Coverage
+
+- User table functionality (search, sort, display)
+- Form validation and submission
+- Modal interactions
+- Routing behavior
+
+## 🎨 UI/UX Design
+
+### Design Principles
+
+- **Clean & Modern**: Minimalist design with clear hierarchy
+- **Responsive**: Mobile-first approach
+- **Accessible**: WCAG 2.1 AA compliance
+- **Consistent**: Unified design system
+
+### Color Scheme
+
+- Primary: Blue (#3B82F6)
+- Secondary: Gray (#6B7280)
+- Success: Green (#10B981)
+- Error: Red (#EF4444)
+- Background: Light Gray (#F9FAFB)
+
+### Typography
+
+- Font: Inter (Google Fonts)
+- Weights: 400 (normal), 500 (medium), 600 (semibold), 700 (bold)
+
+## 🔧 Configuration
+
+### Environment Variables
+
+```env
+# API Configuration
 NEXT_PUBLIC_API_BASE_URL=https://jsonplaceholder.typicode.com
-NEXT_PUBLIC_API_TIMEOUT=10000
-NEXT_PUBLIC_USERS_ENDPOINT=/users
+NEXT_PUBLIC_API_TIMEOUT=5000
 
-# Optional fallbacks for development
-NEXT_PUBLIC_API_BASE_URL_FALLBACK=https://jsonplaceholder.typicode.com
-NEXT_PUBLIC_API_TIMEOUT_FALLBACK=10000
-NEXT_PUBLIC_USERS_ENDPOINT_FALLBACK=/users
+# Feature Flags
+NEXT_PUBLIC_ENABLE_DEBUG_LOGGING=true
 ```
 
-### 2. Quality Assurance
+### API Endpoints
 
-Before committing code, run the quality checks:
+- **Users**: `GET /users` - Fetch all users
+- **User Details**: `GET /users/:id` - Fetch specific user
 
-```bash
-npm run dev:check:all
-```
+## 🚀 Performance Optimizations
 
-This command runs:
+### Implemented
 
-- **ESLint**: Code linting and style checking
-- **TypeScript**: Type checking with `tsc --noEmit`
+- **Memoization**: useMemo for expensive computations
+- **Lazy Loading**: Code splitting for routes
+- **Efficient Rendering**: Optimized re-renders
+- **Debounced Search**: Smooth search experience
 
-### 3. Development Workflow
+### Future Optimizations
 
-1. **Start Development Server**: `npm run dev`
-2. **Make Changes**: Edit components in `src/components/`
-3. **Quality Check**: `npm run dev:check:all`
-4. **Test Features**: Verify user interactions and API calls
-5. **Commit**: Only commit after passing quality checks
+- **Virtualization**: For large datasets (>50 items)
+- **Caching**: API response caching
+- **Pagination**: Server-side pagination
+- **Image Optimization**: Lazy loading images
 
-### 4. Environment Variables
+## 🔒 Security Considerations
 
-The project uses a sophisticated environment variable system:
+- **Input Validation**: Client and server-side validation
+- **XSS Prevention**: Sanitized user inputs
+- **CSRF Protection**: Token-based protection
+- **Content Security Policy**: Restricted resource loading
 
-- **Primary Variables**: Main configuration values
-- **Fallback Variables**: Backup values for development
-- **Validation**: Runtime validation of required variables
-- **Type Safety**: TypeScript integration for environment values
+## 📱 Browser Support
 
-## 🧪 Testing
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
-### Manual Testing
+## 🤝 Contributing
 
-1. **API Integration**: Verify users load from JSONPlaceholder
-2. **User Interactions**: Click user cards to open detail modal
-3. **Error Handling**: Test with invalid API endpoints
-4. **Responsive Design**: Test on different screen sizes
-
-### Quality Checks
-
-```bash
-# Run all quality checks
-npm run dev:check:all
-
-# Individual checks
-npm run lint      # ESLint
-npm run type-check # TypeScript
-```
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-```
-
-### Manual Deployment
-
-```bash
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-```
-
-## 📚 Documentation
-
-- **Implementation Plan**: See `DASHBOARD_PLAN.md` for detailed development roadmap
-- **Environment Setup**: See `ENVIRONMENT_SETUP.md` for environment variable documentation
-- **API Documentation**: JSONPlaceholder API at https://jsonplaceholder.typicode.com
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is created for educational and evaluation purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 🙏 Acknowledgments
 
-**Built with ❤️ using Next.js, TypeScript, and Tailwind CSS**
+- [JSONPlaceholder](https://jsonplaceholder.typicode.com/) for the mock API
+- [Tailwind CSS](https://tailwindcss.com/) for the styling framework
+- [React Testing Library](https://testing-library.com/) for testing utilities

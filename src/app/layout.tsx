@@ -1,14 +1,7 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
+'use client';
+
 import { UserProvider } from '../context/UserContext';
-
-const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: 'User Dashboard',
-  description: 'A user dashboard application for managing user data',
-};
+import './globals.css';
 
 export default function RootLayout({
   children,
@@ -17,7 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <UserProvider>{children}</UserProvider>
       </body>
     </html>
