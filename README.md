@@ -56,7 +56,7 @@ A modern, responsive React dashboard application for managing user data with sea
 | Feature                    | Implementation                                 | Justification                                               |
 | -------------------------- | ---------------------------------------------- | ----------------------------------------------------------- |
 | **Zod Validation**         | ✅ Type-safe form validation                   | Modern validation library with excellent TypeScript support |
-| **GitHub Actions**         | ✅ Engineering CI + QA Nightly workflows       | Automated quality assurance and regression testing          |
+| **GitHub Actions CI/CD**   | ✅ Engineering CI + QA Nightly workflows       | Automated quality assurance and regression testing          |
 | **Team-based Testing**     | ✅ Frontendfrogs, FrontendFellows, Backendteam | Scalable testing organization for enterprise teams          |
 | **Performance Monitoring** | ✅ Codecov integration, build verification     | Continuous quality monitoring and reporting                 |
 | **Accessibility**          | ✅ WCAG 2.1 AA compliance                      | Inclusive design for all users                              |
@@ -201,7 +201,7 @@ src/
 - **Loading states** - Skeleton loaders and spinners
 - **Error handling** - Comprehensive error boundaries and user feedback
 
-## 📊 GitHub Actions
+## 📊 GitHub Actions & CI/CD
 
 ### Engineering CI
 
@@ -214,6 +214,26 @@ src/
 - **Regression testing** - Daily comprehensive test suite
 - **qa-shadow-report** - Team-based reporting and metrics
 - **Google Sheets integration** - Automated reporting
+
+### Automated Quality Assurance
+
+This project implements a comprehensive CI/CD pipeline with:
+
+- **Daily Nightly Tests** - Automated regression testing at 1 AM UTC
+- **Team-based Reporting** - qa-shadow-report sends detailed test results to Google Sheets
+- **Quality Monitoring** - Continuous integration ensures code quality on every push/PR
+- **Performance Tracking** - Code coverage and build verification on every change
+
+### 📈 Test Reporting
+
+The project uses **qa-shadow-report** for comprehensive test reporting:
+
+- **Automated Reports** - Daily test results sent to Google Sheets
+- **Team Metrics** - Track performance by team (Frontendfrogs, FrontendFellows, Backendteam)
+- **Historical Data** - Maintain test history and trends
+- **Quality Insights** - Detailed analysis of test coverage and failures
+
+**📊 View Today's Report (August 1st):** [Google Sheets Dashboard](https://docs.google.com/spreadsheets/d/1Y8tFpbNEKPtQWmo3U9idGxxoSB3zIbLrQFsllr1mySs/edit?gid=1726990861#gid=1726990861)
 
 ## 🤝 Contributing
 
