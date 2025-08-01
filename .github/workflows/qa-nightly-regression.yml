@@ -1,0 +1,55 @@
+name: Nightly regression and report
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # Runs daily at 1 AM UTC
+  push:
+    branches:
+      - main
+
+jobs:
+  qa-regression-and-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+
+      - name: Install GPG
+        run: sudo apt-get install -y gpg
+
+      - name: Decrypt Google Sheets Key
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --output googleCredentials.json --decrypt googleCredentials.json.gpg
+
+      - name: Set Google Key File Path
+        run: echo "GOOGLE_KEY_FILE_PATH=$(pwd)/googleCredentials.json" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run QA regression tests
+        run: npm run qa:cypress:nightly
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-results
+          path: cypress/results/
+          retention-days: 30
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots/
+          retention-days: 30

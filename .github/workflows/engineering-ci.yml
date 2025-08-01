@@ -1,0 +1,51 @@
+name: Engineering CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run dev:lint:project
+
+      - name: Run type checking
+        run: npm run dev:type-check:project
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Run test coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Build application
+        run: npm run build
