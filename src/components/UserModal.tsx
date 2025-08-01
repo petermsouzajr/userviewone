@@ -114,10 +114,7 @@ export default function UserModal() {
           </div>
         </div>
         <div className="flex justify-end pt-6 border-t border-gray-200">
-          <Button
-            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-            onClick={handleClose}
-          >
+          <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
         </div>

@@ -1,0 +1,334 @@
+'use client';
+
+import React, { useState } from 'react';
+import { UserFormData } from '../types/user';
+import { Button, Input, Modal } from './ui';
+import { useFormValidation } from '../hooks/useFormValidation';
+import { useUserContext, userActions } from '../context/UserContext';
+
+interface AddUserFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const initialFormData: UserFormData = {
+  name: '',
+  username: '',
+  email: '',
+  phone: '',
+  website: '',
+  address: {
+    street: '',
+    suite: '',
+    city: '',
+    zipcode: '',
+  },
+  company: {
+    name: '',
+    catchPhrase: '',
+    bs: '',
+  },
+};
+
+export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
+  const { dispatch } = useUserContext();
+  const [formData, setFormData] = useState<UserFormData>(initialFormData);
+
+  const {
+    formState,
+    handleFieldChange,
+    handleFieldBlur,
+    getFieldError,
+    hasFieldError,
+    validateForm,
+    clearErrors,
+    setSubmitting,
+  } = useFormValidation({
+    validateOnChange: true,
+    validateOnBlur: true,
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => {
+      const newData = { ...prev };
+
+      // Handle nested fields (address, company)
+      if (field.includes('.')) {
+        const [parent, child] = field.split('.');
+        if (parent === 'address') {
+          newData.address = { ...newData.address, [child]: value };
+        } else if (parent === 'company') {
+          newData.company = { ...newData.company, [child]: value };
+        }
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (newData as any)[field] = value;
+      }
+
+      return newData;
+    });
+
+    handleFieldChange(field, value);
+  };
+
+  const handleInputBlur = (field: string, value: string) => {
+    handleFieldBlur(field, value);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setSubmitting(true);
+
+    // Validate entire form
+    const isValid = validateForm(formData);
+
+    if (isValid) {
+      try {
+        // Create new user with generated ID
+        const newUser = {
+          ...formData,
+          id: Date.now(), // Simple ID generation for demo
+          address: {
+            ...formData.address,
+            geo: {
+              lat: '0',
+              lng: '0',
+            },
+          },
+        };
+
+        // Add user to state
+        dispatch(userActions.addUser(newUser));
+
+        // Reset form and close modal
+        setFormData(initialFormData);
+        clearErrors();
+        onClose();
+      } catch (error) {
+        console.error('Error adding user:', error);
+      } finally {
+        setSubmitting(false);
+      }
+    } else {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData(initialFormData);
+    clearErrors();
+    onClose();
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={handleCancel}
+      title="Add New User"
+      size="xl"
+      closeOnBackdrop={true}
+      closeOnEscape={true}
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Basic Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Name *"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              onBlur={(e) => handleInputBlur('name', e.target.value)}
+              error={
+                hasFieldError('name')
+                  ? getFieldError('name') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('name') ? 'error' : 'default'}
+            />
+            <Input
+              label="Username *"
+              value={formData.username}
+              onChange={(e) => handleInputChange('username', e.target.value)}
+              onBlur={(e) => handleInputBlur('username', e.target.value)}
+              error={
+                hasFieldError('username')
+                  ? getFieldError('username') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('username') ? 'error' : 'default'}
+            />
+            <Input
+              label="Email *"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              onBlur={(e) => handleInputBlur('email', e.target.value)}
+              error={
+                hasFieldError('email')
+                  ? getFieldError('email') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('email') ? 'error' : 'default'}
+            />
+            <Input
+              label="Phone *"
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+              onBlur={(e) => handleInputBlur('phone', e.target.value)}
+              error={
+                hasFieldError('phone')
+                  ? getFieldError('phone') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('phone') ? 'error' : 'default'}
+            />
+            <Input
+              label="Website"
+              type="url"
+              value={formData.website}
+              onChange={(e) => handleInputChange('website', e.target.value)}
+              onBlur={(e) => handleInputBlur('website', e.target.value)}
+              error={
+                hasFieldError('website')
+                  ? getFieldError('website') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('website') ? 'error' : 'default'}
+              helperText="Optional - must start with http:// or https://"
+            />
+          </div>
+        </div>
+
+        {/* Address Information */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Address</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Street *"
+              value={formData.address.street}
+              onChange={(e) =>
+                handleInputChange('address.street', e.target.value)
+              }
+              onBlur={(e) => handleInputBlur('address.street', e.target.value)}
+              error={
+                hasFieldError('street')
+                  ? getFieldError('street') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('street') ? 'error' : 'default'}
+            />
+            <Input
+              label="Suite"
+              value={formData.address.suite}
+              onChange={(e) =>
+                handleInputChange('address.suite', e.target.value)
+              }
+              onBlur={(e) => handleInputBlur('address.suite', e.target.value)}
+            />
+            <Input
+              label="City *"
+              value={formData.address.city}
+              onChange={(e) =>
+                handleInputChange('address.city', e.target.value)
+              }
+              onBlur={(e) => handleInputBlur('address.city', e.target.value)}
+              error={
+                hasFieldError('city')
+                  ? getFieldError('city') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('city') ? 'error' : 'default'}
+            />
+            <Input
+              label="Zipcode *"
+              value={formData.address.zipcode}
+              onChange={(e) =>
+                handleInputChange('address.zipcode', e.target.value)
+              }
+              onBlur={(e) => handleInputBlur('address.zipcode', e.target.value)}
+              error={
+                hasFieldError('zipcode')
+                  ? getFieldError('zipcode') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('zipcode') ? 'error' : 'default'}
+            />
+          </div>
+        </div>
+
+        {/* Company Information */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Company</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Company Name *"
+              value={formData.company.name}
+              onChange={(e) =>
+                handleInputChange('company.name', e.target.value)
+              }
+              onBlur={(e) => handleInputBlur('company.name', e.target.value)}
+              error={
+                hasFieldError('company.name')
+                  ? getFieldError('company.name') || undefined
+                  : undefined
+              }
+              variant={hasFieldError('company.name') ? 'error' : 'default'}
+            />
+            <Input
+              label="Catch Phrase"
+              value={formData.company.catchPhrase}
+              onChange={(e) =>
+                handleInputChange('company.catchPhrase', e.target.value)
+              }
+              onBlur={(e) =>
+                handleInputBlur('company.catchPhrase', e.target.value)
+              }
+            />
+            <Input
+              label="Business Strategy"
+              value={formData.company.bs}
+              onChange={(e) => handleInputChange('company.bs', e.target.value)}
+              onBlur={(e) => handleInputBlur('company.bs', e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Form Actions */}
+        <div className="flex justify-between pt-6 border-t border-gray-200">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleCancel}
+            disabled={formState.isSubmitting}
+            className="!font-bold"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="secondary"
+            loading={formState.isSubmitting}
+            disabled={formState.isSubmitting}
+          >
+            {formState.isSubmitting ? 'Adding User...' : 'Add User'}
+          </Button>
+        </div>
+
+        {/* Form Status */}
+        {formState.hasErrors && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-sm text-red-600">
+              Please fix the {formState.errorCount} error
+              {formState.errorCount !== 1 ? 's' : ''} above.
+            </p>
+          </div>
+        )}
+      </form>
+    </Modal>
+  );
+}
