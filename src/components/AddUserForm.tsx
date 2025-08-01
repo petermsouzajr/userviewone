@@ -357,8 +357,11 @@ export default function AddUserForm({ isOpen, onClose }: AddUserFormProps) {
               {formState.errorCount !== 1 ? 's' : ''}:
             </p>
             <ul className="text-sm text-red-600 space-y-1">
-              {errors.map((error) => (
-                <li key={error.field} className="flex items-start">
+              {errors.map((error, index) => (
+                <li
+                  key={`${error.field}-${index}`}
+                  className="flex items-start"
+                >
                   <span className="text-red-500 mr-1">•</span>
                   <span>
                     <strong>{error.field.replace('.', ' ')}:</strong>{' '}
