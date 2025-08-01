@@ -12,13 +12,9 @@ export default defineConfig({
     defaultCommandTimeout: 10000,
     requestTimeout: 10000,
     responseTimeout: 10000,
-  },
-  component: {
-    devServer: {
-      framework: 'next',
-      bundler: 'webpack',
+    setupNodeEvents(on, config) {
+      require('@cypress/grep/src/plugin')(config);
+      return config;
     },
-    supportFile: 'cypress/support/component.ts',
-    specPattern: 'cypress/component/**/*.cy.{js,jsx,ts,tsx}',
   },
 });
